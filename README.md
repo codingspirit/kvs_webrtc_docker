@@ -55,3 +55,29 @@ If demo is running, user could see a demo video stream via KVS console viewer cl
 3. Click `Start Viewer`:
 
 ![](https://github.com/codingspirit/kvs_webrtc_docker/blob/master/test_page.png)
+
+## Cross-Compilation
+For cross-compilation, add your own toolchain and plantform info into script `/cross_compile_sdk.sh`:
+
+```
+#!/bin/sh
+
+cd amazon-kinesis-video-streams-webrtc-sdk-c/
+if [ -n "$1" ]; then
+    if [ $1 = "clean" ]; then
+        rm -rf build
+    fi
+fi
+
+if [ -d "build" ]; then
+    mkdir build
+fi
+cd build
+
+# For Cross-Compilation
+export CC=arm-linux-gnueabi-gcc
+export CXX=arm-linux-gnueabi-g++
+cmake .. -DBUILD_OPENSSL=TRUE -DBUILD_OPENSSL_PLATFORM=linux-generic32 -DBUILD_LIBSRTP_HOST_PLATFORM=x86_64-unknown-linux-gnu -DBUILD_LIBSRTP_DESTINATION_PLATFORM=arm-unknown-linux-uclibcgnueabi
+make
+
+```
